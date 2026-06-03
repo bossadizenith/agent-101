@@ -1,11 +1,11 @@
 import { config } from "dotenv";
 config();
 
-import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
+import * as readline from "node:readline/promises";
 
-import { stepCountIs, streamText, tool } from "ai";
 import { google } from "@ai-sdk/google";
+import { isLoopFinished, streamText, tool } from "ai";
 import { z } from "zod";
 
 const main = async () => {
@@ -18,7 +18,7 @@ const main = async () => {
     model: google("gemini-3.5-flash"),
     prompt: `List the public repositories of ${prompt}`,
     tools: { githubTool },
-    stopWhen: stepCountIs(5),
+    stopWhen: isLoopFinished(),
     experimental_onToolCallStart: ({ toolCall }) => {
       console.log(`Calling tool: ${toolCall.toolName}`);
     },
