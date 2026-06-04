@@ -13,6 +13,12 @@ import type { Repo } from "./types";
 
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY;
 
+const SYSTEM_PROMPT = `You are a research agent. For identity + GitHub + report requests:
+1. Use webSearchTool to identify the person and their GitHub username.
+2. Use githubTool with that exact GitHub username (not display name).
+3. Use summary to write a markdown report file.
+4. Then briefly confirm what you wrote.`;
+
 const tvly = tavily({
   apiKey: TAVILY_API_KEY,
 });
@@ -23,6 +29,7 @@ const main = async () => {
 
   const result = streamText({
     model: google("gemini-2.0-flash"),
+    system: SYSTEM_PROMPT,
     prompt,
     tools: { githubTool, webSearchTool, summary },
     stopWhen: isLoopFinished(),
@@ -45,7 +52,8 @@ const main = async () => {
 };
 
 const githubTool = tool({
-  description: "A tool for users public repositories",
+  description:
+    "Fetch public GitHub repos for a known username. Call after webSearchTool has confirmed the username.",
   inputSchema: z.object({
     username: z.string().describe("The github username of the user"),
   }),
@@ -68,7 +76,8 @@ const githubTool = tool({
 });
 
 const webSearchTool = tool({
-  description: "A tool for searching the web",
+  description:
+    "Search the web to identify a person and find their GitHub username. Use before githubTool when the username is unknown.",
   inputSchema: z.object({
     query: z.string().describe("The query to search the web for"),
   }),
@@ -78,13 +87,18 @@ const webSearchTool = tool({
 });
 
 const summary = tool({
-  description: "A tool for writing a file",
+  description:
+    "Write the final markdown report to disk. Call last, after web search and GitHub data are collected.",
   inputSchema: z.object({
     path: z.string().describe("The path to the file to write"),
     content: z.string().describe("The content to write to the file"),
   }),
   execute: async ({ path, content }) => {
     await fs.writeFile(path, content);
+    return {
+      path,
+      summary: content,
+    };
   },
 });
 
