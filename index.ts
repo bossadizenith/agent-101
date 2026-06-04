@@ -9,6 +9,7 @@ import { google } from "@ai-sdk/google";
 import { isLoopFinished, streamText, tool } from "ai";
 import { z } from "zod";
 import { tavily } from "@tavily/core";
+import type { Repo } from "./types";
 
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY;
 
@@ -53,7 +54,16 @@ const githubTool = tool({
       `https://api.github.com/users/${username}/repos`,
     );
     const data = await response.json();
-    return data;
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid response from GitHub API");
+    }
+
+    return data.map((repo: Repo) => ({
+      name: repo.name,
+      url: repo.html_url,
+      stars: repo.stargazers_count,
+    }));
   },
 });
 
