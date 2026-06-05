@@ -1,6 +1,3 @@
-import { config } from "dotenv";
-config();
-
 import { stdin as input, stdout as output } from "node:process";
 import * as readline from "node:readline/promises";
 
