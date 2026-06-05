@@ -12,7 +12,10 @@ export const webSearchTool = tool({
   inputSchema: z.object({
     query: z.string().describe("The query to search the web for"),
   }),
-  execute: async ({ query }) => {
-    return await tvly.search(query);
-  },
+  execute: async ({ query }) => search(query),
 });
+
+export const search = async (query: string) => {
+  const result = await tvly.search(query, { searchDepth: "advanced" });
+  return result.results.map((result) => result.content);
+};
