@@ -1,9 +1,9 @@
 import { webSearchTool } from "./search";
-import { summaryTool } from "./summary";
+import { writeReportTool } from "./report";
 import { githubTool } from "./github";
 
 export const tools = {
   webSearchTool,
-  summaryTool,
+  writeReportTool,
   githubTool,
 };

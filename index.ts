@@ -19,9 +19,9 @@ const main = async () => {
     prompt,
     tools,
     stopWhen: isLoopFinished(),
-    onStepFinish: ({ usage, stepNumber, toolCalls }) => {
-      console.log(`Step ${stepNumber} finished: ${usage.totalTokens}`);
-    },
+    // onStepFinish: ({ usage, stepNumber, toolCalls }) => {
+    //   console.log(`Step ${stepNumber} finished: ${usage.totalTokens}`);
+    // },
     experimental_onToolCallStart: ({ toolCall }) => {
       console.log(`Calling tool: ${toolCall.toolName}`);
     },
