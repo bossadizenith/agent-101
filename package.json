@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/groq": "^3.0.39",
     "@ai-sdk/openai": "^3.0.67",
     "@tavily/core": "^0.7.5",
     "ai": "^6.0.194",
