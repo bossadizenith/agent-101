@@ -3,16 +3,22 @@ import { z } from "zod";
 import type { Repo } from "../types";
 
 export const githubTool = tool({
-  description:
-    "Fetch public GitHub repos for a known username. Call after webSearchTool has confirmed the username.",
+  description: "Fetch public GitHub repos for a known username.",
   inputSchema: z.object({
-    username: z.string().describe("The github username of the user"),
+    username: z
+      .string()
+      .regex(/^[a-zA-Z0-9-]+$/, "GitHub handle only, no spaces")
+      .describe("Exact GitHub username/handle, not display name"),
   }),
   execute: async ({ username }) => {
     const response = await fetch(
       `https://api.github.com/users/${username}/repos`,
     );
     const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.statusText}`);
+    }
 
     if (!Array.isArray(data)) {
       throw new Error("Invalid response from GitHub API");

@@ -2,7 +2,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import fs from "node:fs/promises";
 
-export const writeReportTool = tool({
+export const reportTool = tool({
   description:
     "Write the final markdown report to disk. Call last, after web search and GitHub data are collected.",
   inputSchema: z.object({
