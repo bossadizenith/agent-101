@@ -12,7 +12,7 @@ export const webSearchTool = tool({
   inputSchema: z.object({
     query: z.string().describe("The query to search the web for"),
   }),
-  execute: async ({ query }) => search(query),
+  execute: async ({ query }) => await search(query),
 });
 
 export const search = async (query: string) => {
