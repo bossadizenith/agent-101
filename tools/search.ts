@@ -1,6 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { tavily } from "@tavily/core";
+import type { SearchResult } from "../types";
 
 const tvly = tavily({
   apiKey: process.env.TAVILY_API_KEY,
@@ -17,5 +18,9 @@ export const webSearchTool = tool({
 
 export const search = async (query: string) => {
   const result = await tvly.search(query, { searchDepth: "advanced" });
-  return result.results.map((result) => result.content);
+  return result.results.map((result) => ({
+    title: result.title,
+    url: result.url,
+    content: result.content,
+  })) as SearchResult[];
 };
