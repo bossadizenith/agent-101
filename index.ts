@@ -6,13 +6,13 @@ import { tools } from "./tools";
 import { logToolCallStart, logToolCallFinish } from "./lib/logger";
 import { SYSTEM_PROMPT } from "./lib/const";
 
-const model = groq("llama-3.3-70b-versatile");
+const model = groq("meta-llama/llama-4-scout-17b-16e-instruct");
 
 export const query =
   "Search for the top AI agent frameworks in 2025, then look at the public GitHub repos of bossadi zenith to see if they've worked with any of them, then write a full report";
 
-const main = () =>
-  streamText({
+const main = async () => {
+  const result = streamText({
     model,
     system: SYSTEM_PROMPT,
     prompt: query,
@@ -21,5 +21,10 @@ const main = () =>
     experimental_onToolCallStart: logToolCallStart,
     experimental_onToolCallFinish: logToolCallFinish,
   });
+
+  for await (const text of result.textStream) {
+    console.log(text);
+  }
+};
 
 main();

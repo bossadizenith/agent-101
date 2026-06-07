@@ -1,8 +1,8 @@
+import { groq } from "@ai-sdk/groq";
+import { tavily } from "@tavily/core";
 import { generateObject, tool } from "ai";
 import { z } from "zod";
-import { tavily } from "@tavily/core";
 import type { SearchResult } from "../types";
-import { groq } from "@ai-sdk/groq";
 
 const tvly = tavily({
   apiKey: process.env.TAVILY_API_KEY,
@@ -20,14 +20,16 @@ export const webSearchTool = tool({
 export const evaluateSearchTool = tool({
   description: "Evaluate the search results",
   inputSchema: z.object({
-    query: z.string().describe("The query to search the web for"),
-    searchResults: z.array(
-      z.object({
-        title: z.string(),
-        url: z.string(),
-        content: z.string(),
-      }),
-    ),
+    query: z.string().describe("The same query used in webSearchTool"),
+    searchResults: z
+      .array(
+        z.object({
+          title: z.string(),
+          url: z.string(),
+          content: z.string().describe("The content of the search result"),
+        }),
+      )
+      .describe("The search results to evaluate"),
   }),
   execute: async ({ query, searchResults }) => {
     const { object: evaluation } = await generateObject({

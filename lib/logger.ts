@@ -26,7 +26,7 @@ export function logToolCallFinish(event: OnToolCallFinishEvent<AppTools>) {
     input: event.toolCall.input,
     success: event.success,
     durationMs: event.durationMs,
-    output: event.success ? event.output : undefined,
+    // output: event.success ? event.output : undefined,
     error: event.success ? undefined : serializeError(event.error),
   });
 }
