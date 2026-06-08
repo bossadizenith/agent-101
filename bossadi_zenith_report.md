@@ -1,36 +1,29 @@
-# Bossadi Zenith
+## Bossadi Zenith Report
 
-## Overview
+### Overview
 
-Bossadi Zenith is a software engineer with a strong background in building innovative projects. He has developed several projects, including snips, a modern web-based tool for creating beautiful, animated code presentations and snippets effortlessly.
+Bossadi Zenith is a full-stack developer with a strong passion for solving community problems. He has experience working on various projects, including building portfolio websites, and is currently employed at Skaleway, a digital design and development agency.
 
-## Projects
+### GitHub Repositories
 
-* [snips](https://github.com/bossadizenith/snips): Create beautiful, animated code presentations and snippets effortlessly.
-* [Framer-ground](https://github.com/bossadizenith/Framer-ground): Elevate your web projects with fine, small animated components.
-* [ground-v2](https://github.com/bossadizenith/ground-v2): Web animations built for performance.
+After conducting a search, I was unable to find any GitHub repositories associated with the username "codeenv".
 
-## Skills
+### Skills and Experience
 
-* JavaScript
-* TypeScript
-* ReactJS
-* NodeJS
-* NextJS
-* TailwindCSS
-* Redux
-* CSS
-* Git
-* GitHub
+* Full-stack development
+* Front-end development
+* Project management
+* Software development
+* Web development
 
-## Experience
+### Education and Certifications
 
-* Software Engineer at Skaleway
-* Full-stack Developer at TiC Foundation
-* Software Developer at Skaleway
+* Self-taught full-stack developer
+* Certifications:
+	+ Front-End Web UI Frameworks and Tools: Bootstrap 4 (Coursera)
+	+ Full-Stack Web Development with React (Coursera)
+	+ Server-side Development with NodeJS, Express and MongoDB (Coursera)
 
-## Education
+### Conclusion
 
-* Full-Stack Web Development with React
-* Front-End Web UI Frameworks and Tools: Bootstrap 4
-* Server-side Development with NodeJS, Express and MongoDB
+In conclusion, Bossadi Zenith is a skilled full-stack developer with a strong passion for solving community problems. Although I was unable to find any GitHub repositories associated with his username, his experience and certifications demonstrate his expertise in the field.
