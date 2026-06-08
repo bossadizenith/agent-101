@@ -9,7 +9,7 @@ import { SYSTEM_PROMPT } from "./lib/const";
 const model = groq("meta-llama/llama-4-scout-17b-16e-instruct");
 
 export const query =
-  "Search for the top AI agent frameworks in 2026, then look at the public GitHub repos of bossadi zenith to see if they've worked with any of them, then write a full report";
+  "who's bossadi zenith and gimme a report of what you found";
 
 const main = async () => {
   const result = streamText({

@@ -6,3 +6,9 @@ some of the issues i face while working with these models as i'm learning throug
   Early on, repos didn’t show because streamText defaults to one step (stepCountIs(1)), so the model called GitHub but never got a follow-up turn to summarize.
 
 - no built-in "why did it pick this tool?"
+
+- Tool execution order is controlled via prompt engineering
+    — fragile, breaks if prompt wording changes
+    — no guarantee the model follows it
+    — no error if it skips a step
+    — not enforceable in code
