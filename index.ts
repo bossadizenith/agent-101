@@ -27,8 +27,6 @@ const main = async () => {
       },
     ],
     stopWhen: isLoopFinished(),
-    experimental_onToolCallStart: logToolCallStart,
-    experimental_onToolCallFinish: logToolCallFinish,
   });
 
   for await (const text of result.textStream) {
