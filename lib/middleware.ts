@@ -1,10 +1,10 @@
 import { tool, type Tool, type ToolExecuteFunction } from "ai";
 
+import type { ToolMiddlewareFunction } from "../types";
+
 export function withToolMiddleware<INPUT, OUTPUT>(
   t: Tool<INPUT, OUTPUT>,
-  middleware: (
-    next: ToolExecuteFunction<INPUT, OUTPUT>,
-  ) => ToolExecuteFunction<INPUT, OUTPUT>,
+  middleware: ToolMiddlewareFunction<INPUT, OUTPUT>,
 ): Tool<INPUT, OUTPUT> {
   if (!t.execute) return t;
 
@@ -45,6 +45,31 @@ export function withToolLogging<INPUT, OUTPUT>(
         });
         throw error;
       }
+    };
+    return wrapped as ToolExecuteFunction<INPUT, OUTPUT>;
+  });
+}
+
+export function withToolRetry<INPUT, OUTPUT>(
+  t: Tool<INPUT, OUTPUT>,
+  { maxRetries = 3, delayMs = 300 },
+) {
+  return withToolMiddleware(t, (next) => {
+    const wrapped = async (
+      ...args: Parameters<ToolExecuteFunction<INPUT, OUTPUT>>
+    ) => {
+      let lastError: unknown;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        console.log(`Attempt ${attempt} of ${maxRetries}`);
+        try {
+          return await next(...args);
+        } catch (error) {
+          lastError = error;
+          if (attempt < maxRetries)
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+      }
+      throw lastError;
     };
     return wrapped as ToolExecuteFunction<INPUT, OUTPUT>;
   });

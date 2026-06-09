@@ -1,12 +1,9 @@
 import "dotenv/config";
 
-import { groq } from "@ai-sdk/groq";
 import { isLoopFinished, streamText } from "ai";
+import { model, SYSTEM_PROMPT } from "./lib/const";
 import { tools } from "./tools";
-import { logToolCallStart, logToolCallFinish } from "./lib/logger";
-import { SYSTEM_PROMPT } from "./lib/const";
 import { searchWithEvaluation } from "./tools/search";
-import { model } from "./lib/const";
 
 export const query =
   "who's bossadi zenith and gimme a report of what you found";

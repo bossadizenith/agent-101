@@ -8,7 +8,14 @@ some of the issues i face while working with these models as i'm learning throug
 - no built-in "why did it pick this tool?"
 
 - Tool execution order is controlled via prompt engineering
-    — fragile, breaks if prompt wording changes
-    — no guarantee the model follows it
-    — no error if it skips a step
-    — not enforceable in code
+  — fragile, breaks if prompt wording changes
+  — no guarantee the model follows it
+  — no error if it skips a step
+  — not enforceable in code
+
+- CRITICAL: Agent continued after tool failure and
+  hallucinated the missing data in the final output
+  — user received a confident report with fabricated content
+  — no indication that githubTool had failed
+  — no way to mark a tool as "critical — stop if this fails"
+  — this is a production data integrity problem

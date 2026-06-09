@@ -1,3 +1,5 @@
+import type { ToolExecuteFunction } from "ai";
+
 export type Repo = {
   name: string;
   html_url: string;
@@ -9,3 +11,7 @@ export type SearchResult = {
   url: string;
   content: string;
 };
+
+export type ToolMiddlewareFunction<INPUT, OUTPUT> = (
+  next: ToolExecuteFunction<INPUT, OUTPUT>,
+) => ToolExecuteFunction<INPUT, OUTPUT>;

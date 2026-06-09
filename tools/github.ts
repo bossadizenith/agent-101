@@ -16,6 +16,8 @@ export const githubTool = tool({
     );
     const data = await response.json();
 
+    // throw new Error("test error");
+
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.statusText}`);
     }
