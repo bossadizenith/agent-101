@@ -33,6 +33,7 @@ export function withToolLogging<INPUT, OUTPUT>(
           tool: toolName,
           durationMs: performance.now() - start,
           success: true,
+          input,
         });
         return output;
       } catch (error) {
