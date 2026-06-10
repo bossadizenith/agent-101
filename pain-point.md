@@ -23,3 +23,28 @@ some of the issues i face while working with these models as i'm learning throug
 - Retry alone is not enough — need to distinguish
   between "retry and continue" vs "retry and abort"
   No concept of tool criticality in current agent SDKs
+
+- Tool failures return empty errors — impossible to debug
+  SOLVED: withToolLogging + serializeError
+
+- Agent passed malformed input to a tool with no validation
+  (passed "bossadi zenith" instead of "bossadizenith")
+  SOLVED: input sanitization in githubTool
+
+- Evaluation logic implemented as a tool — model can skip it
+  SOLVED: moved to middleware, runs before agent sees results
+
+- Agent behavior is extremely prompt-sensitive
+  — small wording changes produce completely different
+  tool call sequences
+
+- Tools that use structured outputs break silently
+  on models that don't support json_schema
+
+- Retry without stop condition is incomplete
+  SOLVED: withToolCritical aborts run after exhausted retries
+
+- System prompts are doing the runtime's job
+  — execution order, validation, retry logic all in plain English
+  — not enforceable, breaks with different models
+  SOLUTION DIRECTION: replace prompt instructions with code guarantees

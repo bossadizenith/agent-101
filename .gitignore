@@ -29,9 +29,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # IntelliJ based IDEs
 .idea
-*_report.md
+*report.md
 *Report.md
-*_Report.md
+
+runs
 
 # Finder (MacOS) folder config
 .DS_Store
