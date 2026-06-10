@@ -19,3 +19,7 @@ some of the issues i face while working with these models as i'm learning throug
   — no indication that githubTool had failed
   — no way to mark a tool as "critical — stop if this fails"
   — this is a production data integrity problem
+
+- Retry alone is not enough — need to distinguish
+  between "retry and continue" vs "retry and abort"
+  No concept of tool criticality in current agent SDKs

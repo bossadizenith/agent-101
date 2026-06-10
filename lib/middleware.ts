@@ -84,6 +84,29 @@ export function withToolRetry<INPUT, OUTPUT>(
   });
 }
 
+export function withToolCritical<INPUT, OUTPUT>(
+  t: Tool<INPUT, OUTPUT>,
+): Tool<INPUT, OUTPUT> {
+  return withToolMiddleware(t, (next) => {
+    const wrapped = async (
+      ...args: Parameters<ToolExecuteFunction<INPUT, OUTPUT>>
+    ) => {
+      try {
+        return await next(...args);
+      } catch (error) {
+        console.error({
+          phase: "critical_failure",
+          message: "Tool critical failure",
+          error: serializeError(error),
+        });
+
+        process.exit(1);
+      }
+    };
+    return wrapped as ToolExecuteFunction<INPUT, OUTPUT>;
+  });
+}
+
 function serializeError(error: unknown) {
   if (error instanceof Error) {
     return { name: error.name, message: error.message, stack: error.stack };
