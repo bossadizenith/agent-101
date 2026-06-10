@@ -30,6 +30,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # IntelliJ based IDEs
 .idea
 *_report.md
+*Report.md
 *_Report.md
 
 # Finder (MacOS) folder config

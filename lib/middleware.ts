@@ -61,13 +61,21 @@ export function withToolRetry<INPUT, OUTPUT>(
     ) => {
       let lastError: unknown;
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        const wait = delayMs * Math.pow(2, attempt - 1);
         console.log(`Attempt ${attempt} of ${maxRetries}`);
         try {
           return await next(...args);
         } catch (error) {
           lastError = error;
+          console.log({
+            phase: "retry",
+            attempt,
+            maxRetries,
+            error: serializeError(error),
+            nextRetryMs: attempt < maxRetries ? wait : null,
+          });
           if (attempt < maxRetries)
-            await new Promise((resolve) => setTimeout(resolve, delayMs));
+            await new Promise((resolve) => setTimeout(resolve, wait));
         }
       }
       throw lastError;
