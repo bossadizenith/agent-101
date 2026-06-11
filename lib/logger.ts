@@ -4,6 +4,7 @@ import type {
   TypedToolCall,
 } from "ai";
 import type { tools } from "../tools";
+import type { SerializedError } from "../types";
 
 type AppTools = typeof tools;
 export type AppToolCall = TypedToolCall<AppTools>;
@@ -31,7 +32,7 @@ export function logToolCallFinish(event: OnToolCallFinishEvent<AppTools>) {
   });
 }
 
-function serializeError(error: unknown) {
+export function serializeError(error: unknown): SerializedError {
   if (error instanceof Error) {
     return { name: error.name, message: error.message, stack: error.stack };
   }

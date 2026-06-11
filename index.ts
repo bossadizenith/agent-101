@@ -8,8 +8,6 @@ export const query =
   "who's bossadi zenith, github repos and gimme a report of what you found";
 
 const main = async () => {
-  // const validatedResults = await searchWithEvaluation(query);
-
   const result = streamText({
     model,
     system: SYSTEM_PROMPT,

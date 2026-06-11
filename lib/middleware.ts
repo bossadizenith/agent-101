@@ -1,7 +1,9 @@
 import { tool, type Tool, type ToolExecuteFunction } from "ai";
+import type { JSONValue } from "@ai-sdk/provider";
 
 import type { RunState, ToolMiddlewareFunction } from "../types";
 import { writeFileSync } from "fs";
+import { serializeError } from "./logger";
 
 export function withToolMiddleware<INPUT, OUTPUT>(
   t: Tool<INPUT, OUTPUT>,
@@ -117,29 +119,42 @@ export function withToolStateCapture<INPUT, OUTPUT>(
     const wrapped = async (
       ...args: Parameters<ToolExecuteFunction<INPUT, OUTPUT>>
     ) => {
-      const [input] = args;
+      const [input, call] = args;
       const start = performance.now();
+
+      seedMessages(state, call.messages);
 
       try {
         const output = await next(...args);
-        state.status = "completed";
         state.steps.push({
+          toolCallId: call.toolCallId,
           tool: toolName,
           input: input as Record<string, unknown>,
           output,
           success: true,
           durationMs: Math.round(performance.now() - start),
         });
+        appendToolTranscript(state, {
+          toolCallId: call.toolCallId,
+          toolName,
+          input,
+          output,
+        });
         saveState(state);
         return output;
       } catch (error) {
+        const failedStepIndex = state.steps.length;
         state.status = "error";
+        state.failedStepIndex = failedStepIndex;
+        state.completedAt = new Date().toISOString();
         state.steps.push({
+          toolCallId: call.toolCallId,
           tool: toolName,
           input: input as unknown as Record<string, unknown>,
           output: null,
           success: false,
-          durationMs: performance.now() - start,
+          durationMs: Math.round(performance.now() - start),
+          error: serializeError(error),
         });
         saveState(state);
         throw error;
@@ -149,13 +164,61 @@ export function withToolStateCapture<INPUT, OUTPUT>(
   });
 }
 
-function saveState(state: RunState) {
-  writeFileSync(`./runs/${state.runId}.json`, JSON.stringify(state, null, 2));
+function seedMessages(
+  state: RunState,
+  priorMessages: RunState["messages"],
+): void {
+  if (state.messages.length === 0 && priorMessages.length > 0) {
+    state.messages.push(...priorMessages);
+  }
 }
 
-function serializeError(error: unknown) {
-  if (error instanceof Error) {
-    return { name: error.name, message: error.message, stack: error.stack };
-  }
-  return { message: String(error) };
+function appendToolTranscript(
+  state: RunState,
+  {
+    toolCallId,
+    toolName,
+    input,
+    output,
+  }: {
+    toolCallId: string;
+    toolName: string;
+    input: unknown;
+    output: unknown;
+  },
+): void {
+  state.messages.push(
+    {
+      role: "assistant",
+      content: [
+        {
+          type: "tool-call",
+          toolCallId,
+          toolName,
+          input,
+        },
+      ],
+    },
+    {
+      role: "tool",
+      content: [
+        {
+          type: "tool-result",
+          toolCallId,
+          toolName,
+          output: toToolResultOutput(output),
+        },
+      ],
+    },
+  );
+}
+
+function toToolResultOutput(output: unknown) {
+  return typeof output === "string"
+    ? { type: "text" as const, value: output }
+    : { type: "json" as const, value: (output ?? null) as JSONValue };
+}
+
+function saveState(state: RunState) {
+  writeFileSync(`./runs/${state.runId}.json`, JSON.stringify(state, null, 2));
 }
