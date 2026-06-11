@@ -1,32 +1,35 @@
 import "dotenv/config";
 
-import { isLoopFinished, streamText } from "ai";
-import { model, SYSTEM_PROMPT } from "./lib/const";
-import { createTools } from "./tools";
-import { createRun, saveState } from "./lib/state";
+import { runAgent } from "./lib/agent";
+import { DEFAULT_MODEL_ID } from "./lib/const";
+import { replayRun } from "./lib/replay";
+import { createRun } from "./lib/state";
 
 export const query =
   "who's bossadi zenith, github repos and gimme a report of what you found";
 
-const main = async () => {
-  const state = createRun({ model, query });
-  const result = streamText({
-    model,
-    system: SYSTEM_PROMPT,
-    tools: createTools(state),
-    messages: [{ role: "user" as const, content: query }],
-    stopWhen: isLoopFinished(),
-    onFinish: () => {
-      if (state.status !== "running") return;
-      state.status = "completed";
-      state.completedAt = new Date().toISOString();
-      saveState(state);
-    },
-  });
-
-  for await (const text of result.textStream) {
-    console.log(text);
+function getReplayRunId(): string | undefined {
+  const flagIndex = process.argv.indexOf("--replay");
+  if (flagIndex !== -1) {
+    return process.argv[flagIndex + 1];
   }
+
+  return (
+    process.env.REPLAY_RUN_ID ??
+    process.argv.find((arg) => arg.startsWith("run_"))
+  );
+}
+
+const main = async () => {
+  const replayRunId = getReplayRunId();
+
+  if (replayRunId) {
+    await replayRun(replayRunId);
+    return;
+  }
+
+  const state = createRun({ model: DEFAULT_MODEL_ID, query });
+  await runAgent(state);
 };
 
 main();

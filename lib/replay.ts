@@ -1,4 +1,5 @@
-import { loadState } from "./state";
+import { runAgent } from "./agent";
+import { loadState, saveState } from "./state";
 
 export async function replayRun(runId: string) {
   const state = loadState(runId);
@@ -10,14 +11,21 @@ export async function replayRun(runId: string) {
     return;
   }
 
+  if (state.messages.length === 0) {
+    throw new Error(`Run ${runId} has no saved messages to replay from`);
+  }
+
   console.log({
     phase: "replay",
     runId,
     resumingFrom: state.steps[failedStep]?.tool,
-    skipping: failedStep,
+    completedSteps: failedStep,
   });
 
-  const completedSteps = state.steps.slice(0, failedStep);
+  state.status = "running";
+  delete state.failedStepIndex;
+  delete state.completedAt;
+  saveState(state);
 
-  return { completedSteps, resumedFrom: failedStep };
+  await runAgent(state);
 }

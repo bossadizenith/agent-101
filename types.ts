@@ -1,4 +1,4 @@
-import type { LanguageModel, ModelMessage, ToolExecuteFunction } from "ai";
+import type { ModelMessage, ToolExecuteFunction } from "ai";
 
 export type Repo = {
   name: string;
@@ -39,7 +39,7 @@ export type RunState = {
   schemaVersion: 1;
   runId: string;
   query: string;
-  model: LanguageModel;
+  model: string;
   startDate: string;
   completedAt?: string;
   status: RunStatus;
