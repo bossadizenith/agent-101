@@ -4,6 +4,7 @@ export type Repo = {
   name: string;
   html_url: string;
   stargazers_count: number;
+  description: string;
 };
 
 export type SearchResult = {
@@ -27,6 +28,6 @@ export type Step = {
 export type RunState = {
   runId: string;
   startDate: string;
-  status:string
+  status: string;
   steps: Step[];
 };

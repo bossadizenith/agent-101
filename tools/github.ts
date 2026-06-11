@@ -30,6 +30,7 @@ export const githubTool = tool({
       name: repo.name,
       url: repo.html_url,
       stars: repo.stargazers_count,
+      description: repo.description,
     }));
   },
 });

@@ -14,7 +14,7 @@ export const webSearchTool = tool({
   inputSchema: z.object({
     query: z.string().describe("The query to search the web for"),
   }),
-  execute: async ({ query }) => await search(query),
+  execute: async ({ query }) => await searchWithEvaluation(query),
 });
 
 export const evaluateSearchTool = async ({
