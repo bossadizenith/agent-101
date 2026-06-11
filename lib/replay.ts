@@ -1,5 +1,4 @@
-import { readFileSync } from "fs";
-import type { RunState } from "../types";
+import { loadState } from "./state";
 
 export async function replayRun(runId: string) {
   const state = loadState(runId);
@@ -21,9 +20,4 @@ export async function replayRun(runId: string) {
   const completedSteps = state.steps.slice(0, failedStep);
 
   return { completedSteps, resumedFrom: failedStep };
-}
-
-function loadState(runId: string) {
-  const state = readFileSync(`./runs/${runId}.json`, "utf-8");
-  return JSON.parse(state) as RunState;
 }
