@@ -122,16 +122,18 @@ export function withToolStateCapture<INPUT, OUTPUT>(
 
       try {
         const output = await next(...args);
+        state.status = "completed";
         state.steps.push({
           tool: toolName,
-          input: input as unknown as Record<string, unknown>,
+          input: input as Record<string, unknown>,
           output,
           success: true,
-          durationMs: performance.now() - start,
+          durationMs: Math.round(performance.now() - start),
         });
         saveState(state);
         return output;
       } catch (error) {
+        state.status = "error";
         state.steps.push({
           tool: toolName,
           input: input as unknown as Record<string, unknown>,

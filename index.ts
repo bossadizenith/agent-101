@@ -6,7 +6,7 @@ import { tools } from "./tools";
 import { searchWithEvaluation } from "./tools/search";
 
 export const query =
-  "who's bossadi zenith and gimme a report of what you found";
+  "who's bossadi zenith, github repos and gimme a report of what you found";
 
 const main = async () => {
   const validatedResults = await searchWithEvaluation(query);

@@ -3,7 +3,7 @@ import type { Step } from "../types";
 
 export function createRun() {
   const runId = `run_${Date.now()}`;
-  mkdirSync(`./runs/${runId}`, { recursive: true });
+  mkdirSync(`./runs`, { recursive: true });
 
   const state = {
     runId,
@@ -12,7 +12,7 @@ export function createRun() {
     steps: [] as Step[],
   };
 
-  writeFileSync(`./runs/${runId}/state.json`, JSON.stringify(state, null, 2));
+  writeFileSync(`./runs/${runId}.json`, JSON.stringify(state, null, 2));
 
   return state;
 }
