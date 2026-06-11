@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync, readFileSync } from "fs";
 import type { RunState, Step } from "../types";
 import type { LanguageModel } from "ai";
 
@@ -26,4 +26,13 @@ export function createRun({
   writeFileSync(`./runs/${runId}.json`, JSON.stringify(state, null, 2));
 
   return state;
+}
+
+export function loadState(runId: string) {
+  const state = readFileSync(`./runs/${runId}.json`, "utf-8");
+  return JSON.parse(state) as RunState;
+}
+
+export function saveState(state: RunState) {
+  writeFileSync(`./runs/${state.runId}.json`, JSON.stringify(state, null, 2));
 }

@@ -10,7 +10,7 @@ import { webSearchTool as baseSearchTool } from "./search";
 
 export function createTools(state: RunState) {
   return {
-    searchTool: withToolStateCapture("searchTool", baseSearchTool, state),
+    webSearchTool: withToolStateCapture("webSearchTool", baseSearchTool, state),
     githubTool: withToolStateCapture(
       "githubTool",
       withToolCritical(

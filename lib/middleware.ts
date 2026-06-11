@@ -1,9 +1,9 @@
-import { tool, type Tool, type ToolExecuteFunction } from "ai";
 import type { JSONValue } from "@ai-sdk/provider";
+import { tool, type Tool, type ToolExecuteFunction } from "ai";
 
 import type { RunState, ToolMiddlewareFunction } from "../types";
-import { writeFileSync } from "fs";
 import { serializeError } from "./logger";
+import { saveState } from "./state";
 
 export function withToolMiddleware<INPUT, OUTPUT>(
   t: Tool<INPUT, OUTPUT>,
@@ -217,8 +217,4 @@ function toToolResultOutput(output: unknown) {
   return typeof output === "string"
     ? { type: "text" as const, value: output }
     : { type: "json" as const, value: (output ?? null) as JSONValue };
-}
-
-function saveState(state: RunState) {
-  writeFileSync(`./runs/${state.runId}.json`, JSON.stringify(state, null, 2));
 }
