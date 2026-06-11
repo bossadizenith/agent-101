@@ -1,7 +1,14 @@
 import { writeFileSync, mkdirSync } from "fs";
 import type { RunState, Step } from "../types";
+import type { LanguageModel } from "ai";
 
-export function createRun() {
+export function createRun({
+  model,
+  query,
+}: {
+  model: LanguageModel;
+  query: string;
+}) {
   const runId = `run_${Date.now()}`;
   mkdirSync(`./runs`, { recursive: true });
 
@@ -11,8 +18,8 @@ export function createRun() {
     startDate: new Date().toISOString(),
     status: "running",
     steps: [] as Step[],
-    query: "",
-    model: "",
+    query,
+    model,
     messages: [],
   };
 

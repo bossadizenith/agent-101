@@ -3,10 +3,10 @@ import type {
   OnToolCallFinishEvent,
   TypedToolCall,
 } from "ai";
-import type { tools } from "../tools";
+import type { createTools } from "../tools";
 import type { SerializedError } from "../types";
 
-type AppTools = typeof tools;
+type AppTools = ReturnType<typeof createTools>;
 export type AppToolCall = TypedToolCall<AppTools>;
 
 export function logToolCallStart(event: OnToolCallStartEvent<AppTools>) {
