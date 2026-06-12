@@ -54,3 +54,10 @@ some of the issues i face while working with these models as i'm learning throug
   — every step saved to disk as it happens
   — replay loads transcript, continues from failure point
   — model sees completed steps as if it just ran them
+
+- No cost visibility per run or per tool
+  SOLVED: onStep built-in finish
+  — token usage captured per tool call
+  — cost calculated using model pricing table
+  — saved to run state file
+  — summary logged at run completion
