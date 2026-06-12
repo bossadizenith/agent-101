@@ -4,7 +4,7 @@ import { createTools } from "../tools";
 import type { CostByTool, GroqPricing, RunState } from "../types";
 import { resolveModel, SYSTEM_PROMPT } from "./const";
 import { saveState } from "./state";
-import { calculateCost } from "./calculations";
+import { calculateCost } from "./cost";
 
 export async function runAgent(state: RunState) {
   const messages =
