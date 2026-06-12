@@ -1,4 +1,6 @@
-import type { ModelMessage, ToolExecuteFunction } from "ai";
+import type { ModelMessage, ToolExecuteFunction, TypedToolCall } from "ai";
+import type { createTools } from "./tools";
+import type { GROQ_PRICING } from "./lib/const";
 
 export type Repo = {
   name: string;
@@ -47,3 +49,25 @@ export type RunState = {
   messages: ModelMessage[];
   steps: Step[];
 };
+
+export type AppTools = ReturnType<typeof createTools>;
+export type AppToolCall = TypedToolCall<AppTools>;
+
+export type CostEntry = {
+  tool: string;
+  inputTokens: number;
+  outputTokens: number;
+  estimatedCostUsd: number;
+  model: string;
+};
+
+export type CostByTool = Record<string, number>;
+
+export type CostSummary = {
+  runId: string;
+  totalCost: number;
+  totalTokens: number;
+  costByTool: CostByTool;
+};
+
+export type GroqPricing = keyof typeof GROQ_PRICING;

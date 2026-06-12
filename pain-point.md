@@ -48,3 +48,9 @@ some of the issues i face while working with these models as i'm learning throug
   — execution order, validation, retry logic all in plain English
   — not enforceable, breaks with different models
   SOLUTION DIRECTION: replace prompt instructions with code guarantees
+
+- No state recovery when a run dies
+  SOLVED: withToolStateCapture + replayRun
+  — every step saved to disk as it happens
+  — replay loads transcript, continues from failure point
+  — model sees completed steps as if it just ran them

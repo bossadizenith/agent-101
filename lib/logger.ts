@@ -1,13 +1,5 @@
-import type {
-  OnToolCallStartEvent,
-  OnToolCallFinishEvent,
-  TypedToolCall,
-} from "ai";
-import type { createTools } from "../tools";
-import type { SerializedError } from "../types";
-
-type AppTools = ReturnType<typeof createTools>;
-export type AppToolCall = TypedToolCall<AppTools>;
+import type { OnToolCallFinishEvent, OnToolCallStartEvent } from "ai";
+import type { AppTools, SerializedError } from "../types";
 
 export function logToolCallStart(event: OnToolCallStartEvent<AppTools>) {
   const { toolCall, stepNumber } = event;

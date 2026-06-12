@@ -13,3 +13,10 @@ export const model = resolveModel(DEFAULT_MODEL_ID);
 export function resolveModel(modelId: string) {
   return groq(modelId);
 }
+
+export const GROQ_PRICING = {
+  "llama-3.3-70b-versatile": {
+    inputCostPer1M: 0.59,
+    outputCostPer1M: 0.79,
+  },
+};
