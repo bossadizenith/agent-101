@@ -48,6 +48,9 @@ export type RunState = {
   failedStepIndex?: number;
   messages: ModelMessage[];
   steps: Step[];
+  costByTool: CostByTool;
+  totalCostUsd: number;
+  totalTokens: number;
 };
 
 export type AppTools = ReturnType<typeof createTools>;

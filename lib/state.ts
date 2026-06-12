@@ -1,13 +1,7 @@
 import { writeFileSync, mkdirSync, readFileSync } from "fs";
 import type { RunState, Step } from "../types";
 
-export function createRun({
-  model,
-  query,
-}: {
-  model: string;
-  query: string;
-}) {
+export function createRun({ model, query }: { model: string; query: string }) {
   const runId = `run_${Date.now()}`;
   mkdirSync(`./runs`, { recursive: true });
 
@@ -20,6 +14,9 @@ export function createRun({
     query,
     model,
     messages: [],
+    costByTool: {},
+    totalCostUsd: 0,
+    totalTokens: 0,
   };
 
   writeFileSync(`./runs/${runId}.json`, JSON.stringify(state, null, 2));
