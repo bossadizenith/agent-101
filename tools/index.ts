@@ -11,25 +11,25 @@ import { webSearchTool as baseSearchTool } from "./search";
 export function createTools(state: RunState) {
   return {
     webSearchTool: withToolStateCapture("webSearchTool", baseSearchTool, state),
-    githubTool: withToolStateCapture(
-      "githubTool",
-      withToolCritical(
+    githubTool: withToolCritical(
+      withToolStateCapture(
+        "githubTool",
         withToolRetry(baseGithubTool, {
           maxRetries: 3,
           delayMs: 300,
         }),
+        state,
       ),
-      state,
     ),
-    reportTool: withToolStateCapture(
-      "reportTool",
-      withToolCritical(
+    reportTool: withToolCritical(
+      withToolStateCapture(
+        "reportTool",
         withToolRetry(baseReportTool, {
           maxRetries: 3,
           delayMs: 300,
         }),
+        state,
       ),
-      state,
     ),
   };
 }
