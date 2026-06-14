@@ -61,3 +61,8 @@ some of the issues i face while working with these models as i'm learning throug
   — cost calculated using model pricing table
   — saved to run state file
   — summary logged at run completion
+
+Runtime design principle:
+— emit events, don't prescribe behavior
+— users own their storage, logging, and alerting
+— runtime is the nervous system, not the brain

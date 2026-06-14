@@ -1,19 +1,16 @@
 import { isLoopFinished, streamText } from "ai";
 
 import { createTools } from "../tools";
-import type { CostByTool, GroqPricing, RunState } from "../types";
+import type { GroqPricing, RunState } from "../types";
 import { resolveModel, SYSTEM_PROMPT } from "./const";
-import { saveState } from "./state";
 import { calculateCost } from "./cost";
+import { saveState } from "./state";
 
 export async function runAgent(state: RunState) {
   const messages =
     state.messages.length > 0
       ? state.messages
       : [{ role: "user" as const, content: state.query }];
-
-  let totalCost = 0;
-  const costByTool: CostByTool = {};
 
   const result = streamText({
     model: resolveModel(state.model),
@@ -55,6 +52,12 @@ export async function runAgent(state: RunState) {
         );
         state.totalTokens += usage.totalTokens ?? 0;
       }
+    },
+    onChunk: ({ chunk }) => {
+      console.log({
+        phase: "chunk",
+        chunk,
+      });
     },
   });
 
