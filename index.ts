@@ -3,7 +3,7 @@ import "dotenv/config";
 import { runAgent } from "./lib/agent";
 import { DEFAULT_MODEL_ID } from "./lib/const";
 import { replayRun } from "./lib/replay";
-import { createRun } from "./lib/state";
+import { runtime } from "./lib/runtime/instance";
 
 export const query =
   "who's bossadi zenith, github repos and gimme a report of what you found";
@@ -28,8 +28,8 @@ const main = async () => {
     return;
   }
 
-  const state = createRun({ model: DEFAULT_MODEL_ID, query });
-  await runAgent(state);
+  const run = await runtime.createRun({ model: DEFAULT_MODEL_ID, query });
+  await runAgent(run);
 };
 
 main();
