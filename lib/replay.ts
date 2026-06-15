@@ -1,8 +1,9 @@
 import { runAgent } from "./agent";
-import { loadState, saveState } from "./state";
+import { runtime } from "./runtime/instance";
 
 export async function replayRun(runId: string) {
-  const state = loadState(runId);
+  const run = await runtime.loadRun(runId);
+  const state = run.state;
 
   const failedStep = state.steps.findIndex((s) => !s.success);
 
@@ -25,7 +26,7 @@ export async function replayRun(runId: string) {
   state.status = "running";
   delete state.failedStepIndex;
   delete state.completedAt;
-  saveState(state);
+  await run.save();
 
-  await runAgent(state);
+  await runAgent(run);
 }
