@@ -1,5 +1,7 @@
 import type { ModelMessage, ToolExecuteFunction, TypedToolCall } from "ai";
-import type { createTools } from "./tools";
+import type { AppTools } from "./tools";
+
+export type { AppTools } from "./tools";
 import type { GROQ_PRICING } from "./lib/const";
 
 export type Repo = {
@@ -53,7 +55,6 @@ export type RunState = {
   totalTokens: number;
 };
 
-export type AppTools = ReturnType<typeof createTools>;
 export type AppToolCall = TypedToolCall<AppTools>;
 
 export type CostEntry = {
