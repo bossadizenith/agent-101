@@ -1,12 +1,13 @@
 import { isLoopFinished, streamText } from "ai";
 
-import { createTools } from "../tools";
-import type { GroqPricing, RunState } from "../types";
+import { appTools } from "../tools";
+import type { GroqPricing } from "../types";
 import { resolveModel, SYSTEM_PROMPT } from "./const";
 import { calculateCost } from "./cost";
-import { saveState } from "./state";
+import type { RunHandle } from "./runtime";
 
-export async function runAgent(state: RunState) {
+export async function runAgent(run: RunHandle) {
+  const state = run.state;
   const messages =
     state.messages.length > 0
       ? state.messages
@@ -15,28 +16,10 @@ export async function runAgent(state: RunState) {
   const result = streamText({
     model: resolveModel(state.model),
     system: SYSTEM_PROMPT,
-    tools: createTools(state),
+    tools: run.bindTools(appTools),
     messages,
     stopWhen: isLoopFinished(),
-    onFinish: ({ text }) => {
-      if (state.status !== "running") return;
-
-      if (text) {
-        state.messages.push({ role: "assistant", content: text });
-      }
-
-      state.status = "completed";
-      state.completedAt = new Date().toISOString();
-      saveState(state);
-      console.log({
-        phase: "run_complete",
-        runId: state.runId,
-        totalTokens: state.totalTokens,
-        totalCostUsd: state.totalCostUsd,
-        costByTool: state.costByTool,
-        status: state.status,
-      });
-    },
+    ...run.hooks(),
     onStepFinish: ({ finishReason, toolCalls, usage }) => {
       if (finishReason === "tool-calls") {
         for (const t of toolCalls) {
