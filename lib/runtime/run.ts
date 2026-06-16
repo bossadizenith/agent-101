@@ -64,12 +64,8 @@ export function createRunHandle(
         let tool = policy.tool;
 
         if (policy.retry) {
-          tool = withToolRetry(
-            name,
-            state.runId,
-            tool,
-            policy.retry,
-            (event) => internals.emit?.(event),
+          tool = withToolRetry(name, state.runId, tool, policy.retry, (event) =>
+            internals.emit?.(event),
           );
         }
 
