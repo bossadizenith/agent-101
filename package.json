@@ -9,6 +9,8 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@agentruntime/eslint-config": "workspace:*",
+    "@agentruntime/typescript-config": "workspace:*",
     "prettier": "^3.7.4",
     "turbo": "^2.9.18",
     "typescript": "5.9.2"
