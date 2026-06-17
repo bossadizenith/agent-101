@@ -1,10 +1,30 @@
 {
   "name": "agentruntime",
-  "module": "index.ts",
   "type": "module",
-  "private": true,
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm,cjs --dts",
+    "dev": "tsdown src/index.ts --watch"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "private": false,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@agentruntime/typescript-config": "workspace:*",
+    "@agentruntime/eslint-config": "workspace:*",
+    "@types/bun": "latest",
+    "tsdown": "^0.22.3"
   },
   "peerDependencies": {
     "typescript": "^6.0.3"
