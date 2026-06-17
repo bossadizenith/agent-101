@@ -36,12 +36,6 @@ export async function runAgent(run: RunHandle) {
         state.totalTokens += usage.totalTokens ?? 0;
       }
     },
-    onChunk: ({ chunk }) => {
-      console.log({
-        phase: "chunk",
-        chunk,
-      });
-    },
   });
 
   for await (const text of result.textStream) {
