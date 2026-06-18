@@ -1,7 +1,9 @@
-import { runtime } from "../../../packages/core/lib/runtime/instance";
+import { createRuntime } from "agentruntime";
 import { githubTool as baseGithubTool } from "./github";
 import { reportTool as baseReportTool } from "./report";
 import { webSearchTool as baseSearchTool } from "./search";
+
+const runtime = createRuntime();
 
 export const appTools = runtime.tools({
   webSearchTool: { tool: baseSearchTool },
