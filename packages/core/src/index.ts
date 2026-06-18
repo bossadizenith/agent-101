@@ -18,6 +18,7 @@ export type {
   ToolRetryPolicy,
 } from "./lib/types";
 export type { RunHandle } from "./run";
+export { calculateCost } from "./lib/cost";
 
 export { fileStorage, RunNotFoundError } from "./storage-fs";
 
