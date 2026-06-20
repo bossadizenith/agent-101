@@ -35,10 +35,8 @@
     "@ai-sdk/groq": "^3.0.39",
     "@ai-sdk/openai": "^3.0.67",
     "@ai-sdk/provider": "^3.0.10",
-    "@tavily/core": "^0.7.5",
     "ai": "^6.0.194",
     "dotenv": "^17.4.2",
-    "langchain": "^1.4.4",
     "tsx": "^4.22.4",
     "zod": "^4.4.3"
   }
