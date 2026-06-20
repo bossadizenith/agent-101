@@ -1,6 +1,6 @@
 import { groq } from "@ai-sdk/groq";
 
-export const DEFAULT_MODEL_ID = "llama-3.3-70b-versatile";
+export const DEFAULT_MODEL_ID = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 export const evaluationModel = groq(DEFAULT_MODEL_ID);
 
