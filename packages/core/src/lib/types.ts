@@ -1,8 +1,10 @@
 import type {
   ModelMessage,
+  OnStepFinishEvent,
   ToolExecuteFunction,
   TypedToolCall,
   Tool,
+  ToolSet,
 } from "ai";
 
 import type { ModelPricing } from "./const";
@@ -160,3 +162,21 @@ export type CostSummary = {
 };
 
 export type ModelPricingKey = keyof typeof ModelPricing;
+
+export type StepCostSnapshot = {
+  stepCost: number;
+  totalCostUsd: number;
+  totalTokens: number;
+  costByTool: CostByTool;
+};
+
+export type RunStepFinishEvent<TOOLS extends ToolSet = ToolSet> =
+  OnStepFinishEvent<TOOLS> & {
+    cost: StepCostSnapshot;
+  };
+
+export type RunHooksOptions<TOOLS extends ToolSet = ToolSet> = {
+  onStepFinish?: (
+    event: RunStepFinishEvent<TOOLS>,
+  ) => PromiseLike<void> | void;
+};
