@@ -56,8 +56,7 @@ describe("applyStepUsage", () => {
     const second = applyStepUsage(
       state,
       state.model,
-      { inputTokens: 0, outputTokens: 1000, totalToke
-        ns: 1000 },
+      { inputTokens: 0, outputTokens: 1000, totalTokens: 1000 },
       [],
     );
 

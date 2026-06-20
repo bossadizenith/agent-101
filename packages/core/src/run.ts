@@ -50,7 +50,7 @@ export function createRunHandle(
   const saveState = () => internals.save(state);
 
   const abort = (reason: string) => {
-    if (state.status !== "running") return;
+    if (state.status !== "running" && state.status !== "error") return;
 
     state.status = "interrupted";
     state.completedAt = new Date().toISOString();
