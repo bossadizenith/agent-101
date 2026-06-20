@@ -1,9 +1,18 @@
 import type {
+  OnStepFinishEvent,
+  StreamTextOnStepFinishCallback,
+  ToolSet,
+} from "ai";
+
+import type {
+  RunHooksOptions,
   RunState,
+  RunStepFinishEvent,
   RunSummary,
   RuntimeConfig,
   ToolRegistry,
 } from "./lib/types";
+import { applyStepUsage } from "./lib/usage";
 import {
   withToolCritical,
   withToolEvents,
@@ -20,8 +29,9 @@ export type RunHandle = {
   bindTools<TOOLS extends ToolRegistry>(
     tools: TOOLS,
   ): { [K in keyof TOOLS]: TOOLS[K]["tool"] };
-  hooks(): {
+  hooks<TOOLS extends ToolSet = ToolSet>(options?: RunHooksOptions<TOOLS>): {
     onFinish: (params: { text: string }) => Promise<void>;
+    onStepFinish: StreamTextOnStepFinishCallback<TOOLS>;
   };
   save: () => Promise<void>;
   abort: (reason: string) => void;
@@ -95,8 +105,26 @@ export function createRunHandle(
       return bound;
     },
 
-    hooks() {
+    hooks<TOOLS extends ToolSet = ToolSet>(options?: RunHooksOptions<TOOLS>) {
+      const userOnStepFinish = options?.onStepFinish;
+
+      const onStepFinish = async (step: OnStepFinishEvent<TOOLS>) => {
+        const cost = applyStepUsage(
+          state,
+          state.model,
+          step.usage,
+          step.toolCalls,
+        );
+        await saveState();
+
+        if (userOnStepFinish) {
+          const event = Object.assign(step, { cost }) as RunStepFinishEvent<TOOLS>;
+          await userOnStepFinish(event);
+        }
+      };
+
       return {
+        onStepFinish: onStepFinish as StreamTextOnStepFinishCallback<TOOLS>,
         onFinish: async ({ text }) => {
           if (state.status !== "running") return;
 
