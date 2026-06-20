@@ -12,12 +12,15 @@ export type {
   CreateRunOptions,
   ModelPricingKey,
   Repo,
+  RunHooksOptions,
   RunState,
+  RunStepFinishEvent,
   RunSummary,
   RuntimeConfig,
   RuntimeEvent,
   SearchResult,
   Step,
+  StepCostSnapshot,
   Storage,
   ToolPolicy,
   ToolRegistry,
@@ -26,6 +29,7 @@ export type {
 export type { RunHandle } from "./run";
 export { calculateCost } from "./lib/cost";
 export { ModelPricing } from "./lib/const";
+export { GENERATION_COST_KEY, applyStepUsage } from "./lib/usage";
 export { resumeRun } from "./replay";
 
 export { fileStorage, RunNotFoundError } from "./storage-fs";
