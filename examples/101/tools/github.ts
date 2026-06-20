@@ -1,6 +1,12 @@
 import { tool } from "ai";
 import { z } from "zod";
-import type { Repo } from "agentruntime";
+
+export type Repo = {
+  name: string;
+  html_url: string;
+  stargazers_count: number;
+  description: string;
+};
 
 export const githubTool = tool({
   description: "Fetch public GitHub repos for a known username.",

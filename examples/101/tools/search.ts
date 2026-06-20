@@ -1,8 +1,13 @@
 import { tavily } from "@tavily/core";
 import { generateObject, tool } from "ai";
 import { z } from "zod";
-import type { SearchResult } from "agentruntime";
 import { evaluationModel } from "../lib/const";
+
+export type SearchResult = {
+  title: string;
+  url: string;
+  content: string;
+};
 
 const tvly = tavily({
   apiKey: process.env.TAVILY_API_KEY,
