@@ -1,7 +1,7 @@
 import { isLoopFinished, streamText } from "ai";
 import {
   calculateCost,
-  type GroqPricing,
+  type ModelPricingKey,
   type RunHandle,
 } from "agentruntime";
 import { appTools } from "../tools";
@@ -25,7 +25,7 @@ export async function runAgent(run: RunHandle) {
       if (finishReason === "tool-calls") {
         for (const t of toolCalls) {
           state.costByTool[t.toolName] = calculateCost(
-            state.model as GroqPricing,
+            state.model as ModelPricingKey,
             usage.inputTokens ?? 0,
             usage.outputTokens ?? 0,
           );

@@ -10,7 +10,7 @@ import { createInitialRunState, fileStorage } from "./storage-fs";
 
 export type {
   CreateRunOptions,
-  GroqPricing,
+  ModelPricingKey,
   Repo,
   RunState,
   RunSummary,
@@ -25,7 +25,7 @@ export type {
 } from "./lib/types";
 export type { RunHandle } from "./run";
 export { calculateCost } from "./lib/cost";
-export { GROQ_PRICING } from "./lib/const";
+export { ModelPricing } from "./lib/const";
 export { resumeRun } from "./replay";
 
 export { fileStorage, RunNotFoundError } from "./storage-fs";
@@ -56,10 +56,7 @@ export function createRuntime(config: RuntimeConfig = {}) {
       return createRunHandle(state, internals);
     },
 
-    async replayRun(
-      runId: string,
-      execute: (run: RunHandle) => Promise<void>,
-    ) {
+    async replayRun(runId: string, execute: (run: RunHandle) => Promise<void>) {
       const run = await this.loadRun(runId);
       await resumeRun(run, execute);
     },

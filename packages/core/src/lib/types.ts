@@ -5,7 +5,7 @@ import type {
   Tool,
 } from "ai";
 
-import type { GROQ_PRICING } from "./const";
+import type { ModelPricing } from "./const";
 
 export type RunSummary = {
   runId: string;
@@ -159,4 +159,4 @@ export type CostSummary = {
   costByTool: CostByTool;
 };
 
-export type GroqPricing = keyof typeof GROQ_PRICING;
+export type ModelPricingKey = keyof typeof ModelPricing;

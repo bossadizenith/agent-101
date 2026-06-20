@@ -1,4 +1,4 @@
-export const GROQ_PRICING = {
+export const ModelPricing = {
   "llama-3.3-70b-versatile": {
     inputCostPer1M: 0.59,
     outputCostPer1M: 0.79,
