@@ -23,18 +23,20 @@ export async function runAgent(run: RunHandle) {
     ...run.hooks(),
     onStepFinish: ({ finishReason, toolCalls, usage }) => {
       if (finishReason === "tool-calls") {
-        for (const t of toolCalls) {
-          state.costByTool[t.toolName] = calculateCost(
-            state.model as ModelPricingKey,
-            usage.inputTokens ?? 0,
-            usage.outputTokens ?? 0,
-          );
-        }
-        state.totalCostUsd += Object.values(state.costByTool).reduce(
-          (acc, curr) => acc + curr,
-          0,
+        const stepCost = calculateCost(
+          state.model as ModelPricingKey,
+          usage.inputTokens ?? 0,
+          usage.outputTokens ?? 0,
         );
+        state.totalCostUsd += stepCost;
         state.totalTokens += usage.totalTokens ?? 0;
+
+        const costPerTool = stepCost / toolCalls.length;
+        for (const t of toolCalls) {
+          state.costByTool[t.toolName] =
+            (state.costByTool[t.toolName] ?? 0) + costPerTool;
+        }
+        void run.save();
       }
     },
   });
