@@ -91,19 +91,6 @@ export type CreateRunOptions = {
   model: string;
 };
 
-export type Repo = {
-  name: string;
-  html_url: string;
-  stargazers_count: number;
-  description: string;
-};
-
-export type SearchResult = {
-  title: string;
-  url: string;
-  content: string;
-};
-
 export type ToolMiddlewareFunction<INPUT, OUTPUT> = (
   next: ToolExecuteFunction<INPUT, OUTPUT>,
 ) => ToolExecuteFunction<INPUT, OUTPUT>;
@@ -176,7 +163,5 @@ export type RunStepFinishEvent<TOOLS extends ToolSet = ToolSet> =
   };
 
 export type RunHooksOptions<TOOLS extends ToolSet = ToolSet> = {
-  onStepFinish?: (
-    event: RunStepFinishEvent<TOOLS>,
-  ) => PromiseLike<void> | void;
+  onStepFinish?: (event: RunStepFinishEvent<TOOLS>) => PromiseLike<void> | void;
 };
