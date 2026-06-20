@@ -24,7 +24,7 @@ Peer dependency: `ai` (Vercel AI SDK v6+).
 agentruntime wraps your existing AI SDK tools with retry, logging, state capture, and critical-failure handling. You still own the agent loop (`streamText`, `generateText`, etc.) — the runtime wires in reliability around it.
 
 ```ts
-import { createRuntime, calculateCost, type ModelPricingKey } from "agentruntime";
+import { createRuntime } from "agentruntime";
 import { isLoopFinished, streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 
@@ -51,20 +51,12 @@ const result = streamText({
   tools: run.bindTools(appTools),
   messages: [{ role: "user", content: run.query }],
   stopWhen: isLoopFinished(),
-  ...run.hooks(),
-  onStepFinish: ({ finishReason, toolCalls, usage }) => {
-    if (finishReason === "tool-calls") {
-      for (const t of toolCalls) {
-        run.state.costByTool[t.toolName] = calculateCost(
-          run.model as ModelPricingKey,
-          usage.inputTokens ?? 0,
-          usage.outputTokens ?? 0,
-        );
-      }
-      run.state.totalTokens += usage.totalTokens ?? 0;
-      void run.save();
-    }
-  },
+  ...run.hooks({
+    onStepFinish: ({ cost, finishReason, toolCalls, usage }) => {
+      console.log({ finishReason, toolCalls, usage, cost });
+      // cost: { stepCost, totalCostUsd, totalTokens, costByTool }
+    },
+  }),
 });
 
 for await (const text of result.textStream) {
@@ -80,7 +72,7 @@ See [`examples/101`](./examples/101) for a full working agent.
 | ----------------- | -------------------------------------------------------------- |
 | `retry`           | Retries failed tools with exponential backoff                  |
 | `critical`        | Aborts the run if the tool fails after retries are exhausted   |
-| Cost tracking     | `calculateCost()` helper + run state fields you update per step |
+| Cost tracking     | Built into `run.hooks()` — tracks every step, saves to run state |
 | State persistence | Saves every tool step to disk as the run progresses            |
 | Run replay        | Load a saved run and re-execute your agent function            |
 | Logging           | Structured events for every tool call — input, output, duration |
@@ -125,13 +117,31 @@ const appTools = runtime.tools({
 
 Returns AI SDK-compatible tools wrapped with runtime middleware (retry, events, state capture, critical abort). Pass this to `streamText`, `generateText`, or `generateObject`.
 
-#### `run.hooks()`
+#### `run.hooks(options?)`
 
-Returns lifecycle hooks to spread into your AI SDK call:
+Returns lifecycle hooks to spread into your AI SDK call. Tracks token usage and cost on every step automatically.
+
+```ts
+...run.hooks({
+  onStepFinish?: (event: RunStepFinishEvent) => void | Promise<void>
+})
+// returns { onFinish, onStepFinish }
+```
+
+- `onStepFinish` (returned) — wired to AI SDK; updates `run.state`, saves, then calls your optional observer
+- `onFinish` (returned) — marks run completed, saves state, emits `run:complete`
+
+Your optional `onStepFinish` receives the full AI SDK step event plus a `cost` snapshot:
 
 ```ts
 {
-  onFinish: ({ text }) => Promise<void>  // marks run completed, saves state, emits run:complete
+  // ...all OnStepFinishEvent fields (finishReason, toolCalls, usage, text, etc.)
+  cost: {
+    stepCost: number
+    totalCostUsd: number
+    totalTokens: number
+    costByTool: Record<string, number>  // tool steps split evenly; text-only steps use "__generation__"
+  }
 }
 ```
 
@@ -166,9 +176,11 @@ All runtime activity flows through a single `onEvent` callback:
 
 ```ts
 import {
-  calculateCost,   // estimate USD cost from Groq model + token counts
-  ModelPricing,    // pricing table for supported models
-  fileStorage,     // default ./runs/ persistence
+  calculateCost,        // low-level cost helper (used internally by hooks)
+  applyStepUsage,       // apply usage to run state manually if needed
+  GENERATION_COST_KEY,  // cost bucket for non-tool steps ("__generation__")
+  ModelPricing,         // pricing table for supported models
+  fileStorage,
   RunNotFoundError,
 } from "agentruntime";
 ```
