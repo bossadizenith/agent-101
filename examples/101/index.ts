@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import { runAgent } from "./lib/agent";
 import { DEFAULT_MODEL_ID } from "./lib/const";
 import { runtime } from "./lib/runtime/instance";
