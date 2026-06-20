@@ -1,10 +1,6 @@
 import { isLoopFinished, streamText } from "ai";
-import {
-  calculateCost,
-  type ModelPricingKey,
-  type RunHandle,
-} from "agentruntime";
-import { appTools } from "../tools";
+import type { RunHandle } from "agentruntime";
+import { appTools, type AppTools } from "../tools";
 import { resolveModel, SYSTEM_PROMPT } from "./const";
 
 export async function runAgent(run: RunHandle) {
@@ -20,25 +16,16 @@ export async function runAgent(run: RunHandle) {
     tools: run.bindTools(appTools),
     messages,
     stopWhen: isLoopFinished(),
-    ...run.hooks(),
-    onStepFinish: ({ finishReason, toolCalls, usage }) => {
-      if (finishReason === "tool-calls") {
-        const stepCost = calculateCost(
-          state.model as ModelPricingKey,
-          usage.inputTokens ?? 0,
-          usage.outputTokens ?? 0,
-        );
-        state.totalCostUsd += stepCost;
-        state.totalTokens += usage.totalTokens ?? 0;
-
-        const costPerTool = stepCost / toolCalls.length;
-        for (const t of toolCalls) {
-          state.costByTool[t.toolName] =
-            (state.costByTool[t.toolName] ?? 0) + costPerTool;
-        }
-        void run.save();
-      }
-    },
+    ...run.hooks<AppTools>({
+      onStepFinish: ({ cost }) => {
+        console.log({
+          stepCost: cost.stepCost,
+          totalCostUsd: cost.totalCostUsd,
+          totalTokens: cost.totalTokens,
+          costByTool: cost.costByTool,
+        });
+      },
+    }),
   });
 
   for await (const text of result.textStream) {
