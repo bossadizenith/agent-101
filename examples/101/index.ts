@@ -2,7 +2,6 @@ import "dotenv/config";
 
 import { runAgent } from "./lib/agent";
 import { DEFAULT_MODEL_ID } from "./lib/const";
-import { replayRun } from "./lib/replay";
 import { runtime } from "./lib/runtime/instance";
 
 export const query =
@@ -24,7 +23,7 @@ const main = async () => {
   const replayRunId = getReplayRunId();
 
   if (replayRunId) {
-    await replayRun(replayRunId);
+    await runtime.replayRun(replayRunId, runAgent);
     return;
   }
 

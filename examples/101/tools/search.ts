@@ -1,8 +1,8 @@
 import { tavily } from "@tavily/core";
 import { generateObject, tool } from "ai";
 import { z } from "zod";
-import { model } from "../../../packages/core/lib/const";
-import type { SearchResult } from "../../../packages/core/types";
+import type { SearchResult } from "agentruntime";
+import { evaluationModel } from "../lib/const";
 
 const tvly = tavily({
   apiKey: process.env.TAVILY_API_KEY,
@@ -25,7 +25,7 @@ export const evaluateSearchTool = async ({
   searchResults: SearchResult[];
 }) => {
   const { object: evaluation } = await generateObject({
-    model,
+    model: evaluationModel,
     prompt: `Evaluate whether the search results are relevant and will help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.
 
       <search_results>

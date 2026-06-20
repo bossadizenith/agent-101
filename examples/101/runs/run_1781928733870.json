@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "run_1781928733870",
+  "startDate": "2026-06-20T04:12:13.871Z",
+  "status": "running",
+  "steps": [],
+  "query": "who's bossadi zenith, github repos and gimme a report of what you found",
+  "model": "llama-3.3-70b-versatile",
+  "messages": [],
+  "costByTool": {},
+  "totalCostUsd": 0,
+  "totalTokens": 0
+}

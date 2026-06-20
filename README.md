@@ -1,159 +1,136 @@
-# Turborepo starter
+# agentruntime
 
-This Turborepo starter is maintained by the Turborepo core team.
+agentruntime is a reliability runtime for AI agents
 
-## Using this example
+## The Problem
 
-Run the following command:
+AI agents work in demos. They break in production.
 
-```sh
-npx create-turbo@latest
+Tools fail silently. Agents hallucinate missing data.
+Runs die with no way to recover. Costs spiral with no visibility.
+
+**agentruntime** is the reliability layer between your agents and production.
+
+## Install
+
+```bash
+npm i agentruntime
 ```
 
-## What's inside?
+## Quickstart
 
-This Turborepo includes the following packages/apps:
+```ts
+import { createRuntime } from "agentruntime";
+import { streamText } from "ai";
+import { groq } from "@ai-sdk/groq";
 
-### Apps and Packages
+const runtime = createRuntime({
+  onToolComplete: (event) => console.log(event),
+  onRunComplete: (summary) => console.log(summary),
+});
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+const tools = runtime.tools({
+  webSearchTool: { tool: baseSearchTool },
+  githubTool: { tool: baseGithubTool, retry: 3, critical: true },
+  reportTool: { tool: baseReportTool, retry: 3, critical: true },
+});
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+const result = await streamText({
+  model: groq("llama-3.3-70b-versatile"),
+  tools,
+  prompt: "Research Bossadi Zenith and write a report",
+});
 ```
 
-Without global `turbo`, use your package manager:
+## What It Does
 
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
+| Feature           | What it means                                                  |
+| ----------------- | -------------------------------------------------------------- |
+| `retry`           | Retries failed tools with exponential backoff                  |
+| `critical`        | Stops the entire run if this tool exhausts retries             |
+| Cost tracking     | Tracks token usage and dollar cost per tool per run            |
+| State persistence | Saves every step to disk as the run progresses                 |
+| Run replay        | Resume a failed run from the failure point                     |
+| Logging           | Full visibility into every tool call — input, output, duration |
+
+## API
+
+### `createRuntime(config)`
+
+```ts
+const runtime = createRuntime({
+  onToolComplete?: (event: ToolCompleteEvent) => void
+  onToolFailure?:  (event: ToolFailureEvent) => void
+  onRunComplete?:  (summary: RunSummary) => void
+  storage?: {
+    save: (state: RunState) => Promise<void>
+    load: (runId: string) => Promise<RunState>
+  }
+})
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### `runtime.tools(config)`
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```ts
+const tools = runtime.tools({
+  [toolName]: {
+    tool:      Tool       // your AI SDK tool definition
+    retry?:    number     // number of retries (default: 0)
+    critical?: boolean    // stop run if tool fails (default: false)
+    timeout?:  number     // ms before tool is considered failed
+  }
+})
 ```
 
-Without global `turbo`:
+Returns a tools object compatible with `streamText`, `generateText`,
+and `generateObject` from the Vercel AI SDK.
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
+## Run State
+
+Every run is saved to `./runs/<runId>.json`
+
+```json
+{
+  "runId": "run_1781239262611",
+  "startedAt": "2026-06-10T02:00:00Z",
+  "status": "completed",
+  "totalTokens": 8664,
+  "totalCostUsd": 0.00164576,
+  "costByTool": {
+    "webSearchTool": 0.00012212,
+    "githubTool": 0.00035694,
+    "reportTool": 0.00056552
+  },
+  "steps": [
+    {
+      "tool": "githubTool",
+      "input": { "username": "bossadizenith" },
+      "success": true,
+      "durationMs": 1255
+    }
+  ]
+}
 ```
 
-### Develop
+## Replay a Failed Run
 
-To develop all apps and packages, run the following command:
+```ts
+import { replayRun } from "agentruntime";
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+await replayRun("run_1781239262611");
 ```
 
-Without global `turbo`, use your package manager:
+Loads the saved state, finds the first failed step,
+and resumes from there — skipping steps that already succeeded.
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
+## Coming Soon
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+- Memory between runs
+- Human-in-the-loop approvals
+- Long-running task support
+- Dashboard UI
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## Built By
 
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+[Bossadi Zenith](https://bossadizenith.me) | [X](https://bossadizenith.me/x)
+Questions: [hello@bossadizenith.me](mailto:hello@bossadizenith.me)
