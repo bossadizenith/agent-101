@@ -1,6 +1,6 @@
 {
   "name": "agentruntime",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "description": "A production reliability runtime for AI agents",
   "author": "Bossadi Zenith <hello@bossadizenith.me>",
@@ -19,16 +19,28 @@
     "url": "https://github.com/bossadizenith/agentruntime"
   },
   "homepage": "https://github.com/bossadizenith/agentruntime#readme",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": false,
   "files": [
     "dist",
     "README.md"
@@ -36,20 +48,19 @@
   "scripts": {
     "build": "tsdown src/index.ts --format esm,cjs --dts",
     "dev": "tsdown src/index.ts --watch",
-    "test": "bun test"
-  },
-  "dependencies": {
-    "zod": "^4.4.3"
+    "test": "bun test",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "ai": "^6.0.194",
-    "@ai-sdk/provider": "^3.0.10",
-    "typescript": "^6.0.3"
+    "@ai-sdk/provider": "^3.0.10"
   },
   "devDependencies": {
     "@agentruntime/typescript-config": "workspace:*",
     "@agentruntime/eslint-config": "workspace:*",
+    "@ai-sdk/provider": "^3.0.10",
     "@types/bun": "latest",
+    "ai": "^6.0.194",
     "tsdown": "^0.22.3",
     "tsx": "^4.22.4",
     "dotenv": "^17.4.2"
