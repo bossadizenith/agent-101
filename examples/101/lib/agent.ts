@@ -1,5 +1,5 @@
 import { isLoopFinished, streamText } from "ai";
-import type { RunHandle } from "recov";
+import type { RunHandle } from "agentsist";
 import { appTools, type AppTools } from "../tools";
 import { resolveModel, SYSTEM_PROMPT } from "./const";
 

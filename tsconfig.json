@@ -1,3 +1,3 @@
 {
-  "extends": "@recov/typescript-config/base"
+  "extends": "@agentsist/typescript-config/base"
 }

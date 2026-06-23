@@ -1,4 +1,4 @@
-import { createRuntime } from "recov";
+import { createRuntime } from "agentsist";
 
 export const runtime = createRuntime({
   onEvent: (event) => {

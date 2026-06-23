@@ -1,5 +1,5 @@
 {
-  "name": "recov",
+  "name": "agentsist",
   "version": "0.1.0",
   "type": "module",
   "description": "A production reliability runtime for AI agents",
@@ -16,9 +16,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bossadizenith/recov"
+    "url": "https://github.com/bossadizenith/agentsist"
   },
-  "homepage": "https://github.com/bossadizenith/recov#readme",
+  "homepage": "https://github.com/bossadizenith/agentsist#readme",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
@@ -57,8 +57,8 @@
     "@ai-sdk/provider": "^3.0.10"
   },
   "devDependencies": {
-    "@recov/typescript-config": "workspace:*",
-    "@recov/eslint-config": "workspace:*",
+    "@agentsist/typescript-config": "workspace:*",
+    "@agentsist/eslint-config": "workspace:*",
     "@ai-sdk/provider": "^3.0.10",
     "@types/bun": "latest",
     "ai": "^6.0.194",

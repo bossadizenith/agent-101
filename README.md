@@ -1,4 +1,4 @@
-# recov
+# agentsist
 
 A reliability runtime for AI agents built on the [Vercel AI SDK](https://sdk.vercel.ai/).
 
@@ -9,22 +9,22 @@ AI agents work in demos. They break in production.
 Tools fail silently. Agents hallucinate missing data.
 Runs die with no way to recover. Costs spiral with no visibility.
 
-**recov** is the reliability layer between your agents and production.
+**agentsist** is the reliability layer between your agents and production.
 
 ## Install
 
 ```bash
-npm i recov
+npm i agentsist
 ```
 
 Peer dependency: `ai` (Vercel AI SDK v6+).
 
 ## Quickstart
 
-recov wraps your existing AI SDK tools with retry, logging, state capture, and critical-failure handling. You still own the agent loop (`streamText`, `generateText`, etc.) — the runtime wires in reliability around it.
+agentsist wraps your existing AI SDK tools with retry, logging, state capture, and critical-failure handling. You still own the agent loop (`streamText`, `generateText`, etc.) — the runtime wires in reliability around it.
 
 ```ts
-import { createRuntime } from "recov";
+import { createRuntime } from "agentsist";
 import { isLoopFinished, streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 
@@ -182,7 +182,7 @@ import {
   ModelPricing, // pricing table for supported models
   fileStorage,
   RunNotFoundError,
-} from "recov";
+} from "agentsist";
 ```
 
 ## Run State
@@ -211,7 +211,7 @@ Every run is saved to `./runs/<runId>.json` (configurable via `storage`).
       "toolCallId": "abc123",
       "tool": "githubTool",
       "input": { "username": "bossadizenith" },
-      "output": [{ "name": "recov", "stars": 42 }],
+      "output": [{ "name": "agentsist", "stars": 42 }],
       "success": true,
       "durationMs": 1255
     }

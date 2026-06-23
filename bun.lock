@@ -3,31 +3,31 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "recov",
+      "name": "agentsist",
       "devDependencies": {
-        "@recov/eslint-config": "workspace:*",
-        "@recov/typescript-config": "workspace:*",
+        "@agentsist/eslint-config": "workspace:*",
+        "@agentsist/typescript-config": "workspace:*",
         "prettier": "^3.7.4",
         "turbo": "^2.9.18",
         "typescript": "5.9.2",
       },
     },
     "examples/101": {
-      "name": "@recov/101",
+      "name": "@agentsist/101",
       "dependencies": {
         "@ai-sdk/google": "^3.0.80",
         "@ai-sdk/groq": "^3.0.39",
         "@ai-sdk/openai": "^3.0.67",
         "@tavily/core": "^0.7.5",
-        "recov": "workspace:*",
+        "agentsist": "workspace:*",
         "ai": "^6.0.194",
         "langchain": "^1.4.4",
         "tsx": "^4.22.4",
         "zod": "^4.4.3",
       },
       "devDependencies": {
-        "@recov/eslint-config": "workspace:*",
-        "@recov/typescript-config": "workspace:*",
+        "@agentsist/eslint-config": "workspace:*",
+        "@agentsist/typescript-config": "workspace:*",
         "@types/bun": "latest",
       },
       "peerDependencies": {
@@ -35,11 +35,11 @@
       },
     },
     "packages/core": {
-      "name": "recov",
+      "name": "agentsist",
       "version": "0.1.0",
       "devDependencies": {
-        "@recov/eslint-config": "workspace:*",
-        "@recov/typescript-config": "workspace:*",
+        "@agentsist/eslint-config": "workspace:*",
+        "@agentsist/typescript-config": "workspace:*",
         "@ai-sdk/provider": "^3.0.10",
         "@types/bun": "latest",
         "ai": "^6.0.194",
@@ -53,7 +53,7 @@
       },
     },
     "packages/eslint-config": {
-      "name": "@recov/eslint-config",
+      "name": "@agentsist/eslint-config",
       "version": "0.0.0",
       "devDependencies": {
         "@eslint/js": "^9.39.1",
@@ -70,19 +70,19 @@
       },
     },
     "packages/typescript-config": {
-      "name": "@recov/typescript-config",
+      "name": "@agentsist/typescript-config",
       "version": "0.0.0",
     },
   },
   "packages": {
-    "@recov/101": ["@recov/101@workspace:examples/101"],
+    "@agentsist/101": ["@agentsist/101@workspace:examples/101"],
 
-    "@recov/eslint-config": [
-      "@recov/eslint-config@workspace:packages/eslint-config",
+    "@agentsist/eslint-config": [
+      "@agentsist/eslint-config@workspace:packages/eslint-config",
     ],
 
-    "@recov/typescript-config": [
-      "@recov/typescript-config@workspace:packages/typescript-config",
+    "@agentsist/typescript-config": [
+      "@agentsist/typescript-config@workspace:packages/typescript-config",
     ],
 
     "@ai-sdk/gateway": [
@@ -1128,7 +1128,7 @@
       "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==",
     ],
 
-    "recov": ["recov@workspace:packages/core"],
+    "agentsist": ["agentsist@workspace:packages/core"],
 
     "ai": [
       "ai@6.0.207",
