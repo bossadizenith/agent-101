@@ -1,3 +1,3 @@
 {
-  "extends": "@agentruntime/typescript-config/base"
+  "extends": "@recov/typescript-config/base"
 }

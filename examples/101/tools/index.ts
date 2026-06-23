@@ -1,4 +1,4 @@
-import { createRuntime } from "agentruntime";
+import { createRuntime } from "recov";
 import { githubTool as baseGithubTool } from "./github";
 import { reportTool as baseReportTool } from "./report";
 import { webSearchTool as baseSearchTool } from "./search";

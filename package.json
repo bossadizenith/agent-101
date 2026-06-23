@@ -1,5 +1,5 @@
 {
-  "name": "agentruntime",
+  "name": "recov",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -10,8 +10,8 @@
     "example:101": "bun run examples/101/index.ts"
   },
   "devDependencies": {
-    "@agentruntime/eslint-config": "workspace:*",
-    "@agentruntime/typescript-config": "workspace:*",
+    "@recov/eslint-config": "workspace:*",
+    "@recov/typescript-config": "workspace:*",
     "prettier": "^3.7.4",
     "turbo": "^2.9.18",
     "typescript": "5.9.2"

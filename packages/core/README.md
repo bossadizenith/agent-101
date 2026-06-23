@@ -1,4 +1,4 @@
-# agentruntime
+# recov
 
 A reliability runtime for AI agents built on the [Vercel AI SDK](https://sdk.vercel.ai/).
 
@@ -9,22 +9,22 @@ AI agents work in demos. They break in production.
 Tools fail silently. Agents hallucinate missing data.
 Runs die with no way to recover. Costs spiral with no visibility.
 
-**agentruntime** is the reliability layer between your agents and production.
+**recov** is the reliability layer between your agents and production.
 
 ## Install
 
 ```bash
-npm i agentruntime
+npm i recov
 ```
 
 Peer dependency: `ai` (Vercel AI SDK v6+).
 
 ## Quickstart
 
-agentruntime wraps your existing AI SDK tools with retry, logging, state capture, and critical-failure handling. You still own the agent loop (`streamText`, `generateText`, etc.) — the runtime wires in reliability around it.
+recov wraps your existing AI SDK tools with retry, logging, state capture, and critical-failure handling. You still own the agent loop (`streamText`, `generateText`, etc.) — the runtime wires in reliability around it.
 
 ```ts
-import { createRuntime } from "agentruntime";
+import { createRuntime } from "recov";
 import { isLoopFinished, streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 
@@ -65,14 +65,14 @@ for await (const text of result.textStream) {
 
 ## What It Does
 
-| Feature           | What it means                                                  |
-| ----------------- | -------------------------------------------------------------- |
-| `retry`           | Retries failed tools with exponential backoff                  |
-| `critical`        | Aborts the run if the tool fails after retries are exhausted   |
+| Feature           | What it means                                                    |
+| ----------------- | ---------------------------------------------------------------- |
+| `retry`           | Retries failed tools with exponential backoff                    |
+| `critical`        | Aborts the run if the tool fails after retries are exhausted     |
 | Cost tracking     | Built into `run.hooks()` — tracks every step, saves to run state |
-| State persistence | Saves every tool step to disk as the run progresses            |
-| Run replay        | Load a saved run and re-execute your agent function            |
-| Logging           | Structured events for every tool call — input, output, duration |
+| State persistence | Saves every tool step to disk as the run progresses              |
+| Run replay        | Load a saved run and re-execute your agent function              |
+| Logging           | Structured events for every tool call — input, output, duration  |
 
 ## API
 
@@ -134,10 +134,10 @@ Your optional `onStepFinish` receives the full AI SDK step event plus a `cost` s
 {
   // ...all OnStepFinishEvent fields (finishReason, toolCalls, usage, text, etc.)
   cost: {
-    stepCost: number
-    totalCostUsd: number
-    totalTokens: number
-    costByTool: Record<string, number>  // tool steps split evenly; text-only steps use "__generation__"
+    stepCost: number;
+    totalCostUsd: number;
+    totalTokens: number;
+    costByTool: Record<string, number>; // tool steps split evenly; text-only steps use "__generation__"
   }
 }
 ```
@@ -160,14 +160,14 @@ await runtime.replayRun("run_1781239262611", runAgent);
 
 All runtime activity flows through a single `onEvent` callback:
 
-| Event type       | When it fires                          |
-| ---------------- | -------------------------------------- |
-| `tool:start`     | Before a tool executes                 |
-| `tool:complete`  | After a successful tool call           |
-| `tool:failure`   | When a tool throws                     |
-| `tool:retry`     | On each retry attempt                  |
-| `run:complete`   | When the agent finishes (`onFinish`)   |
-| `run:abort`      | When a critical tool fails             |
+| Event type      | When it fires                        |
+| --------------- | ------------------------------------ |
+| `tool:start`    | Before a tool executes               |
+| `tool:complete` | After a successful tool call         |
+| `tool:failure`  | When a tool throws                   |
+| `tool:retry`    | On each retry attempt                |
+| `run:complete`  | When the agent finishes (`onFinish`) |
+| `run:abort`     | When a critical tool fails           |
 
 ### Utilities
 
@@ -179,7 +179,7 @@ import {
   ModelPricing,
   fileStorage,
   RunNotFoundError,
-} from "agentruntime";
+} from "recov";
 ```
 
 ## Run State
@@ -208,7 +208,7 @@ Every run is saved to `./runs/<runId>.json` (configurable via `storage`).
       "toolCallId": "abc123",
       "tool": "githubTool",
       "input": { "username": "bossadizenith" },
-      "output": [{ "name": "agentruntime", "stars": 42 }],
+      "output": [{ "name": "recov", "stars": 42 }],
       "success": true,
       "durationMs": 1255
     }
