@@ -66,7 +66,6 @@ export async function runManagedAgent(): Promise<AgentSummary> {
     storage: fileStorage("./runs/demo"),
     onEvent: (event) => {
       events.push(event);
-      console.log(event);
     },
   });
 
