@@ -14,6 +14,7 @@ import type {
 } from "./lib/types";
 import { applyStepUsage } from "./lib/usage";
 import {
+  withRunGate,
   withToolCritical,
   withToolEvents,
   withToolRetry,
@@ -98,6 +99,8 @@ export function createRunHandle(
             (event) => internals.emit?.(event),
           );
         }
+
+        tool = withRunGate(tool, state);
 
         bound[name as keyof TOOLS] = tool as TOOLS[keyof TOOLS]["tool"];
       }

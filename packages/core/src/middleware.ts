@@ -7,7 +7,7 @@ import type {
   ToolRetryPolicy,
   RuntimeEvent,
 } from "./lib/types";
-import { serializeError } from "./errors";
+import { RunAbortedError, serializeError } from "./errors";
 
 type Emit = (event: RuntimeEvent) => void;
 
@@ -115,6 +115,25 @@ export function withToolRetry<INPUT, OUTPUT>(
       }
 
       throw lastError;
+    };
+
+    return wrapped as ToolExecuteFunction<INPUT, OUTPUT>;
+  });
+}
+
+export function withRunGate<INPUT, OUTPUT>(
+  t: Tool<INPUT, OUTPUT>,
+  state: RunState,
+): Tool<INPUT, OUTPUT> {
+  return withToolMiddleware(t, (next) => {
+    const wrapped = async (
+      ...args: Parameters<ToolExecuteFunction<INPUT, OUTPUT>>
+    ) => {
+      if (state.status === "interrupted") {
+        throw new RunAbortedError();
+      }
+
+      return next(...args);
     };
 
     return wrapped as ToolExecuteFunction<INPUT, OUTPUT>;

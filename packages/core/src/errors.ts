@@ -1,5 +1,12 @@
 import type { SerializedError } from "./lib/types";
 
+export class RunAbortedError extends Error {
+  constructor() {
+    super("Run aborted — no further tool calls are allowed");
+    this.name = "RunAbortedError";
+  }
+}
+
 export function serializeError(error: unknown): SerializedError {
   if (error instanceof Error) {
     return { name: error.name, message: error.message, stack: error.stack };
