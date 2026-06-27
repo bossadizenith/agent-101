@@ -1,7 +1,8 @@
 import { tavily } from "@tavily/core";
 import { generateObject, tool } from "ai";
 import { z } from "zod";
-import { evaluationModel } from "../lib/const";
+import { DEFAULT_MODEL_ID, resolveModel } from "../lib/const";
+import { armGithubFailure } from "./demo-state";
 
 export type SearchResult = {
   title: string;
@@ -15,11 +16,15 @@ const tvly = tavily({
 
 export const webSearchTool = tool({
   description:
-    "Search the web to identify a person and find their GitHub username. Use before githubTool when the username is unknown.",
+    "Search the web for AI companies and their GitHub organization names. Use before githubTool.",
   inputSchema: z.object({
     query: z.string().describe("The query to search the web for"),
   }),
-  execute: async ({ query }) => await searchWithEvaluation(query),
+  execute: async ({ query }) => {
+    const results = await searchWithEvaluation(query);
+    armGithubFailure();
+    return results;
+  },
 });
 
 export const evaluateSearchTool = async ({
@@ -30,7 +35,7 @@ export const evaluateSearchTool = async ({
   searchResults: SearchResult[];
 }) => {
   const { object: evaluation } = await generateObject({
-    model: evaluationModel,
+    model: resolveModel(DEFAULT_MODEL_ID),
     prompt: `Evaluate whether the search results are relevant and will help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.
 
       <search_results>

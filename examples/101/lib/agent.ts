@@ -29,6 +29,6 @@ export async function runAgent(run: RunHandle) {
   });
 
   for await (const text of result.textStream) {
-    console.log(text);
+    process.stdout.write(text);
   }
 }

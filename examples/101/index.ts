@@ -1,8 +1,6 @@
 import { runAgent } from "./lib/agent";
-import { DEFAULT_MODEL_ID } from "./lib/const";
+import { DEFAULT_MODEL_ID, DEMO_TASK } from "./lib/const";
 import { runtime } from "./lib/runtime/instance";
-
-export const query = "what's the weather in tokyo?";
 
 function getReplayRunId(): string | undefined {
   const flagIndex = process.argv.indexOf("--replay");
@@ -24,7 +22,7 @@ const main = async () => {
     return;
   }
 
-  const run = await runtime.createRun({ model: DEFAULT_MODEL_ID, query });
+  const run = await runtime.createRun({ model: DEFAULT_MODEL_ID, query: DEMO_TASK });
   await runAgent(run);
 };
 
